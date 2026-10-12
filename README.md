@@ -16,6 +16,25 @@ Investigated keylogger exfiltration in packet traffic and created Snort rules fo
 - FTP/HTTP analysis
 - Nmap traffic patterns
 
+## Detection Rules
+The Snort rules used in this lab are published as text in [`rules/local.rules`](rules/local.rules), transcribed from the Ref 5 screenshot.
+
+| SID | Message | Logic |
+|---|---|---|
+| 1000001 | ICMP ECHO REQUEST DETECTED | `itype:0` |
+| 1000002 | ICMP ECHO REPLY DETECTED | `itype:8` |
+| 1000003 | TCP SYN STEALTH SCAN DETECTED | `flags:S,12; ack:0; dsize:0` |
+
+> Note: ICMP type 0 is Echo Reply and type 8 is Echo Request, so the labels on SIDs 1000001/1000002 appear swapped. TODO (author): confirm and correct in a later revision.
+
+## MITRE ATT&CK Mapping
+| Technique | ID | Evidence in this lab |
+|---|---|---|
+| Input Capture: Keylogging | T1056.001 | Recovered keylogger artifact (Ref 3) |
+| Exfiltration Over Alternative Protocol (unencrypted FTP) | T1048.003 | FTP-DATA transfer of keylogger HTML files to attacker host (Ref 2) |
+| Network Service Discovery | T1046 | Nmap `-sS` scan detected by SID 1000003 (Refs 6, 8) |
+| Remote System Discovery (ping sweep) | T1018 | ICMP echo traffic detected by SIDs 1000001/1000002 (Refs 7, 9) |
+
 ## Steps
 
 *Ref 1: Wireshark Follow TCP Stream exposes the FTP password `Nipun@123` and confirms upload of the keylogger HTML artifact.*
