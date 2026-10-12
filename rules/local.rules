@@ -1,0 +1,6 @@
+# Transcribed from assets/step-05.png (/etc/snort/rules/local.rules), then corrected.
+# Changelog: recruiter-polish — swapped msg labels so they match ICMP semantics
+# (itype:8 = Echo Request, itype:0 = Echo Reply). Rule logic (itype/sid/flags) unchanged.
+alert icmp any any -> $HOME_NET any (msg: "ICMP ECHO REPLY DETECTED"; itype:0; sid:1000001; rev:1;)
+alert icmp any any -> $HOME_NET any (msg: "ICMP ECHO REQUEST DETECTED"; itype:8; sid:1000002; rev:1;)
+alert tcp any any -> $HOME_NET any (msg: "TCP SYN STEALTH SCAN DETECTED"; flags:S,12; ack:0;dsize:0; sid:1000003; rev:1;)
